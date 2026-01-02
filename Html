@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>GameZone Coins</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#020617;
+  color:#fff;
+  text-align:center;
+}
+header{
+  background:#0f172a;
+  padding:15px;
+}
+section{
+  display:none;
+}
+.active{
+  display:block;
+}
+.card{
+  background:#1e293b;
+  margin:20px auto;
+  padding:20px;
+  width:90%;
+  max-width:360px;
+  border-radius:14px;
+}
+button{
+  width:100%;
+  padding:15px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  background:#22c55e;
+  color:#000;
+  margin-top:12px;
+}
+input{
+  width:80%;
+  padding:12px;
+  font-size:18px;
+  border-radius:10px;
+}
+small{
+  opacity:0.7;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎮 GameZone Coins</h1>
+<h2>💰 Coins : <span id="coins">0</span></h2>
+</header>
+
+<!-- ACCUEIL -->
+<section id="home" class="active">
+<div class="card">
+<button onclick="openGame('clicker')">🎯 Clicker</button>
+<button onclick="openGame('guess')">🔢 Devine</button>
+<button onclick="openGame('roulette')">🎰 Roulette</button>
+<button onclick="dailyBonus()">🎁 Bonus quotidien</button>
+</div>
+<small>⚠️ Coins virtuels – aucun retrait réel</small>
+</section>
+
+<!-- CLICKER -->
+<section id="clicker">
+<div class="card">
+<h2>🎯 Clicker</h2>
+<button onclick="playClicker()">CLIQUER</button>
+<button onclick="goHome()">⬅ Menu</button>
+</div>
+</section>
+
+<!-- DEVINE -->
+<section id="guess">
+<div class="card">
+<h2>🔢 Devine (1–5)</h2>
+<input id="guessInput" type="number" min="1" max="5">
+<button onclick="playGuess()">Valider</button>
+<button onclick="goHome()">⬅ Menu</button>
+</div>
+</section>
+
+<!-- ROULETTE -->
+<section id="roulette">
+<div class="card">
+<h2>🎰 Roulette</h2>
+<button onclick="playRoulette()">TOURNER</button>
+<button onclick="goHome()">⬅ Menu</button>
+</div>
+</section>
+
+<script>
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let lastBonus = localStorage.getItem("bonus") || "";
+
+updateCoins();
+
+function updateCoins(){
+  document.getElementById("coins").innerText = coins;
+  localStorage.setItem("coins", coins);
+}
+
+function openGame(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function goHome(){
+  openGame("home");
+}
+
+/* BONUS */
+function dailyBonus(){
+  let today = new Date().toDateString();
+  if(today !== lastBonus){
+    coins += 50;
+    lastBonus = today;
+    localStorage.setItem("bonus", today);
+    alert("🎁 Bonus +50 coins");
+    updateCoins();
+  }else{
+    alert("⏳ Bonus déjà pris aujourd'hui");
+  }
+}
+
+/* JEUX */
+function playClicker(){
+  coins += Math.floor(Math.random()*10)+1;
+  updateCoins();
+}
+
+function playGuess(){
+  let user = parseInt(document.getElementById("guessInput").value);
+  let win = Math.floor(Math.random()*5)+1;
+  if(user === win){
+    coins += 25;
+    alert("🎉 Gagné +25");
+  }else{
+    alert("❌ Perdu");
+  }
+  updateCoins();
+}
+
+function playRoulette(){
+  if(Math.random() < 0.4){
+    coins += 30;
+    alert("🎉 Gagné +30");
+  }else{
+    alert("❌ Perdu");
+  }
+  updateCoins();
+}
+</script>
+
+</body>
+</html>
